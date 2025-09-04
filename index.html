@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta API Fake</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        #resultado {
+            margin-top: 20px;
+        }
+
+        .post {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Consulta API Fake</h1>
+    <button onclick="buscarPosts()">Buscar Posts</button>
+
+    <div id="resultado"></div>
+
+    <script>
+
+
+
+        async function buscarPosts() {
+            const resultado = document.getElementById("resultado");
+            resultado.innerHTML = "Carregando...";
+
+            const query = '
+            query tituloeconteudo{
+            data{
+            users{
+                        title
+                        body
+                    }
+                }
+            } ';
+
+            try {
+                let resposta = await fetch("https://jsonplaceholder.typicode.com/posts");
+                let dados = await resposta.json(query);
+
+                resultado.innerHTML = ""; // limpa a área
+
+                dados.slice(0, 5).forEach(post => { // só exibe 5 para não poluir
+                    const div = document.createElement("div");
+                    div.className = "post";
+                    div.innerHTML = `<h3>${post.title}</h3><p>${post.body}</p>`;
+                    resultado.appendChild(div);
+                });
+            } catch (erro) {
+                resultado.innerHTML = "Erro ao buscar dados: " + erro;
+            }
+        }
+    </script>
+</body>
+
+</html>
